@@ -27,12 +27,17 @@ def get_metrics(instance_id, metric_name, start_time, end_time):
 
 ## Get Instance Details
 def get_instance_info():
-    instances_info = {}
+    instances_info = []
     response = ec2.describe_instances()
 
     for reservation in response['Reservations']:
         for instance in reservation['Instances']:
             instance_id = instance['InstanceId']
-            instance_name = next(
-            (tag['Value'] for tag in instance.get)
-            )
+            
+        return instances_info
+    
+
+if __name__ == "__main__":
+    # Specify the AWS region you want to use
+    aws_region = 'us-east-1'  # Change this to your desired region
+    get_instance_info()

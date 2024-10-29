@@ -14,8 +14,25 @@ def list_ec2_instances(region):
         print(f"Public IP: {instance.public_ip_address}")
         print(f"Private IP: {instance.private_ip_address}")
         print(f"Launch Time: {instance.launch_time}")
+        name_tag = None
+        if instance.tags:
+            for tag in instance.tags:
+                if tag['Key'] == 'Name':
+                    name_tag = tag['Value']
+                    break  # Stop searching once we find the Name tag
+        print(f"Name: {name_tag if name_tag else 'No Name tag found'}")
+
+        project_tag = None
+        if instance.tags:
+            for tag in instance.tags:
+                if tag['Key'] == 'Project':
+                    project_tag = tag['Value']
+                    break  # Stop searching once we find the Name tag
+        print(f"Project: { project_tag if project_tag else 'No Name tag found'}")
         for volume in instance.volumes.all():
-            print(f"  Volume ID: {volume.id}")
+            if volume.attachments[0]['Device'] == instance.root_device_name:
+                print(f"Root Volume ID: {volume.id}, Size: {volume.size} GiB, State: {volume.state}, Type: {volume.volume_type}")
+                break  # Only print the root volume
         print("-" * 40)
 
 if __name__ == "__main__":
